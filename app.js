@@ -115,8 +115,8 @@ function radarSVG(dims) {
   const ang = i => (-90 + i * 360 / N) * Math.PI / 180;
   let s = `<svg viewBox="0 0 400 350" class="radar" xmlns="http://www.w3.org/2000/svg">`;
   s += `<defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0%" stop-color="#e9a35c" stop-opacity=".30"/>
-    <stop offset="100%" stop-color="#2b3a5c" stop-opacity=".18"/></linearGradient></defs>`;
+    <stop offset="0%" stop-color="#B5543B" stop-opacity=".20"/>
+    <stop offset="100%" stop-color="#E9A35C" stop-opacity=".10"/></linearGradient></defs>`;
 
   [0.25, 0.5, 0.75, 1].forEach(rr => {
     const p = [];
@@ -124,11 +124,11 @@ function radarSVG(dims) {
       const a = ang(i);
       p.push((cx + R * rr * Math.cos(a)).toFixed(1) + ',' + (cy + R * rr * Math.sin(a)).toFixed(1));
     }
-    s += `<polygon points="${p.join(' ')}" fill="none" stroke="#e3ded4" stroke-width="1"/>`;
+    s += `<polygon points="${p.join(' ')}" fill="none" stroke="#E0D8C4" stroke-width="1"/>`;
   });
   for (let i = 0; i < N; i++) {
     const a = ang(i);
-    s += `<line x1="${cx}" y1="${cy}" x2="${(cx + R * Math.cos(a)).toFixed(1)}" y2="${(cy + R * Math.sin(a)).toFixed(1)}" stroke="#e3ded4" stroke-width="1"/>`;
+    s += `<line x1="${cx}" y1="${cy}" x2="${(cx + R * Math.cos(a)).toFixed(1)}" y2="${(cy + R * Math.sin(a)).toFixed(1)}" stroke="#E0D8C4" stroke-width="1"/>`;
   }
 
   const pts = [];
@@ -137,16 +137,16 @@ function radarSVG(dims) {
     const a = ang(i);
     pts.push((cx + R * rr * Math.cos(a)).toFixed(1) + ',' + (cy + R * rr * Math.sin(a)).toFixed(1));
   });
-  s += `<polygon points="${pts.join(' ')}" fill="url(#rg)" stroke="#d4863b" stroke-width="1.8" stroke-linejoin="round"/>`;
+  s += `<polygon points="${pts.join(' ')}" fill="url(#rg)" stroke="#B5543B" stroke-width="1.8" stroke-linejoin="round"/>`;
   dims.forEach((d, i) => {
     const rr = Math.max(0.16, Math.min(1, d.val / 100));
     const a = ang(i);
-    s += `<circle cx="${(cx + R * rr * Math.cos(a)).toFixed(1)}" cy="${(cy + R * rr * Math.sin(a)).toFixed(1)}" r="3.4" fill="#d4863b"/>`;
+    s += `<circle cx="${(cx + R * rr * Math.cos(a)).toFixed(1)}" cy="${(cy + R * rr * Math.sin(a)).toFixed(1)}" r="3.4" fill="#B5543B"/>`;
   });
   dims.forEach((d, i) => {
     const a = ang(i);
     const lx = cx + (R + 30) * Math.cos(a), ly = cy + (R + 26) * Math.sin(a);
-    s += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="13" font-weight="600" fill="#4a5468">${d.label}</text>`;
+    s += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="13" font-weight="600" fill="#4A443A">${d.label}</text>`;
   });
   s += '</svg>';
   return s;
@@ -166,7 +166,7 @@ function renderResult() {
     <div class="hero-nick">${m.nick}</div>
     <div class="hero-ring">
       <svg viewBox="0 0 120 120">
-        <circle cx="60" cy="60" r="52" fill="none" stroke="#e6e1d8" stroke-width="7"/>
+        <circle cx="60" cy="60" r="52" fill="none" stroke="#E3DCC9" stroke-width="7"/>
         <circle cx="60" cy="60" r="52" fill="none" stroke="${m.color}" stroke-width="7"
           stroke-linecap="round" stroke-dasharray="${(r.fit / 100 * 326.7).toFixed(1)} 326.7"
           transform="rotate(-90 60 60)"/>
@@ -309,67 +309,66 @@ function makePoster() {
   const x = c.getContext('2d');
 
   const g = x.createLinearGradient(0, 0, W, H);
-  g.addColorStop(0, '#1b2233');
-  g.addColorStop(0.55, '#25314a');
-  g.addColorStop(1, '#3a2d33');
+  g.addColorStop(0, '#F7F3E8');
+  g.addColorStop(1, '#F1EDDF');
   x.fillStyle = g; x.fillRect(0, 0, W, H);
 
-  // 光晕
+  // 淡淡的赭红光晕
   const rg = x.createRadialGradient(W * 0.78, H * 0.2, 0, W * 0.78, H * 0.2, 620);
-  rg.addColorStop(0, 'rgba(233,163,92,.28)');
-  rg.addColorStop(1, 'rgba(233,163,92,0)');
+  rg.addColorStop(0, 'rgba(181,84,59,.07)');
+  rg.addColorStop(1, 'rgba(181,84,59,0)');
   x.fillStyle = rg; x.fillRect(0, 0, W, H);
 
-  x.fillStyle = 'rgba(255,255,255,.18)';
+  x.fillStyle = 'rgba(35,32,26,.5)';
   x.font = '400 26px "PingFang SC","Microsoft YaHei",sans-serif';
   x.textAlign = 'center';
   x.fillText('你 是 后 会 友 期 里 的', W / 2, 210);
 
-  x.fillStyle = '#f4efe6';
+  x.fillStyle = '#23201A';
   x.font = '700 118px "Songti SC","STSong",serif';
   x.fillText(m.n, W / 2, 360);
 
-  x.fillStyle = '#e9a35c';
+  x.fillStyle = '#B5543B';
   x.font = '600 38px "PingFang SC","Microsoft YaHei",sans-serif';
   x.fillText(m.nick, W / 2, 428);
 
   // 契合度
-  x.strokeStyle = 'rgba(255,255,255,.16)';
+  x.strokeStyle = 'rgba(35,32,26,.12)';
   x.lineWidth = 14;
   x.beginPath(); x.arc(W / 2, 610, 108, 0, Math.PI * 2); x.stroke();
-  x.strokeStyle = '#e9a35c';
+  x.strokeStyle = '#B5543B';
   x.beginPath(); x.arc(W / 2, 610, 108, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * r.fit / 100); x.stroke();
-  x.fillStyle = '#f4efe6';
+  x.fillStyle = '#23201A';
   x.font = '700 76px "Helvetica Neue",Arial,sans-serif';
   x.fillText(r.fit + '%', W / 2, 636);
-  x.fillStyle = 'rgba(255,255,255,.6)';
+  x.fillStyle = 'rgba(35,32,26,.55)';
   x.font = '400 26px "PingFang SC",sans-serif';
   x.fillText('契合度 · ' + r.tier.t, W / 2, 680);
 
   // 台词
-  x.fillStyle = 'rgba(244,239,230,.92)';
+  x.fillStyle = '#4A443A';
   x.font = '400 40px "Songti SC","STSong",serif';
   wrapText(x, m.line, W / 2, 830, W - 200, 60);
 
   // 标签
   let tx = W / 2 - (m.tags.length * 150) / 2;
   m.tags.forEach(t => {
-    x.strokeStyle = 'rgba(233,163,92,.6)';
+    x.strokeStyle = 'rgba(181,84,59,.55)';
     x.lineWidth = 2;
     roundRect(x, tx, 940, 140, 56, 28);
     x.stroke();
-    x.fillStyle = 'rgba(244,239,230,.85)';
+    x.fillStyle = '#4A443A';
     x.font = '400 26px "PingFang SC",sans-serif';
     x.fillText(t, tx + 70, 977);
     tx += 150;
   });
 
-  x.fillStyle = 'rgba(255,255,255,.42)';
+  x.fillStyle = 'rgba(35,32,26,.45)';
   x.font = '400 26px "PingFang SC",sans-serif';
   x.fillText('《后会友期》人物测试 · 28 题', W / 2, 1180);
   x.font = '400 22px "PingFang SC",sans-serif';
   x.fillText('娱乐向内容，不代表对真实人物的评价', W / 2, 1230);
-  x.fillStyle = 'rgba(233,163,92,.5)';
+  x.fillStyle = 'rgba(181,84,59,.5)';
   x.fillRect(W / 2 - 40, 1300, 80, 2);
 
   const a = document.createElement('a');
