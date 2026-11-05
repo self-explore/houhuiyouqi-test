@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>《后会友期》· 你是里面的谁</title>
+<meta name="description" content="28 个关于友情的瞬间，测出你在《后会友期》里对应的是哪一个人。">
+<link rel="stylesheet" href="style.css?v=20261107">
+</head>
+<body>
+
+<!-- 封面 -->
+<section class="page active" id="pg-cover">
+  <div class="cover">
+    <div class="cv-glow"></div>
+    <div class="cv-glow2"></div>
+
+    <div class="cv-top">
+      <div class="cv-eyebrow">友 情 纪 实 真 人 秀 &nbsp;·&nbsp; 2 0 2 6</div>
+      <h1 class="cv-title">你是<br><span>后会友期</span><br>里的谁</h1>
+      <p class="cv-sub">有些人不是突然走散的，<br>是同一件事，你们记住了两个版本。</p>
+    </div>
+
+    <div class="cv-meta">
+      <div class="cv-m"><b id="q-total-all">28</b><span>道情境题</span></div>
+      <div class="cv-cut"></div>
+      <div class="cv-m"><b>7</b><span>种友情人格</span></div>
+      <div class="cv-cut"></div>
+      <div class="cv-m"><b>6</b><span>分钟</span></div>
+    </div>
+
+    <div class="cv-cast">
+      <span>许飞</span><span>厉娜</span><span>马天宇</span><span>张萌</span>
+      <span>王子璇</span><span>白小纯</span><span>青稚</span>
+    </div>
+
+    <button class="btn-main cv-btn" id="btn-start">开 始 测 试</button>
+
+    <p class="cv-privacy">
+      🔒 全程在本地完成，不收集、不上传你的任何信息
+    </p>
+    <p class="cv-disc">
+      娱乐向内容，人物印象仅基于节目公开播出的片段
+    </p>
+  </div>
+</section>
+
+<!-- 答题 -->
+<section class="page" id="pg-quiz">
+  <div class="quiz">
+    <div class="q-head">
+      <div class="q-num"><span id="q-idx">01</span><span id="q-total">/ 28</span></div>
+      <div class="q-track"><div class="q-bar" id="q-bar"></div></div>
+    </div>
+    <div class="q-body">
+      <h2 class="q-text" id="q-text"></h2>
+      <div class="q-opts" id="q-opts"></div>
+    </div>
+    <div class="q-foot">
+      <button class="btn-back" id="btn-back">上一题</button>
+    </div>
+  </div>
+</section>
+
+<!-- 加载 -->
+<section class="page" id="pg-loading">
+  <div class="loading">
+    <div class="ld-ring"><i></i><i></i><i></i></div>
+    <div class="ld-step" id="ld-step">读取你的作答轨迹</div>
+    <div class="ld-dots"><span class="ld-dot on"></span><span class="ld-dot"></span><span class="ld-dot"></span><span class="ld-dot"></span></div>
+    <p class="ld-tip">正在把 28 个瞬间，拼成一个人</p>
+  </div>
+</section>
+
+<!-- 结果 -->
+<section class="page" id="pg-result">
+  <div class="result-scroll" id="result-scroll"></div>
+</section>
+
+<script src="data-hhyq.js?v=20261107"></script>
+<script src="app.js?v=20261107"></script>
+</body>
+</html>
