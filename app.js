@@ -171,7 +171,7 @@ function renderResult() {
           stroke-linecap="round" stroke-dasharray="${(r.fit / 100 * 326.7).toFixed(1)} 326.7"
           transform="rotate(-90 60 60)"/>
       </svg>
-      <div class="hero-ring-txt"><b>${r.fit}</b><span>%</span><i>契合度</i></div>
+      <div class="hero-ring-txt"><span class="rn"><b>${r.fit}</b><u>%</u></span><i>契合度</i></div>
     </div>
     <div class="hero-tag">${r.tier.t}</div>
     <div class="hero-tags">${m.tags.map(t => `<span class="tg">${t}</span>`).join('')}</div>
