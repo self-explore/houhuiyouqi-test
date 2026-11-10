@@ -106,9 +106,9 @@ function buildResult(main, sub, cnt) {
   const tier = FIT_TIERS.find(t => fit >= t.min) || FIT_TIERS[FIT_TIERS.length - 1];
   const top3 = [...dims].sort((a, b) => b.val - a.val).slice(0, 3);
 
-  const tot = (cnt[main.k] || 0) + (cnt[sub.k] || 0);
-  let pctMain = tot > 0 ? Math.round(cnt[main.k] / tot * 100) : 76;
-  pctMain = Math.max(50, Math.min(90, pctMain));
+  // 构成比例与契合度同源：契合度越高，主型占比越高，避免 66% 契合度配 50/50 构成的矛盾感
+  let pctMain = Math.round(60 + (fit - 45) * 0.55);
+  pctMain = Math.max(60, Math.min(88, pctMain));
   const pctSub = 100 - pctMain;
 
   return { main, sub, fit, tier, dims, top3, counts: cnt, pctMain, pctSub };
@@ -196,7 +196,7 @@ function renderResult() {
         <div class="mix-n"><span class="dot" style="background:${sb.color}"></span>${r.pctSub}% ${sb.n} · ${sb.nick}</div>
       </div>
       <p class="para mix-txt">${sb.mix}</p>
-      <p class="note">比例由你 28 道题的作答分布算出。副型不主导你的选择，它浮现在你压力大、或面对很在意的人的时刻。</p>
+      <p class="note">契合度衡量你和主型人物的相似程度；这里的比例，是两个原型在你身上的配比。副型不主导你的选择，它浮现在你压力大、或面对很在意的人的时刻。</p>
     </div>
   </div>
 
@@ -398,7 +398,7 @@ function makePoster() {
   x.fillText(r.pctMain + '% ' + m.n + ' × ' + r.pctSub + '% ' + r.sub.n, W / 2, 1080);
   x.fillStyle = 'rgba(35,32,26,.45)';
   x.font = '400 22px "PingFang SC",sans-serif';
-  x.fillText('人格构成 · 由 28 道题作答分布算出', W / 2, 1122);
+  x.fillText('人格构成 · 主型 × 副型配比', W / 2, 1122);
 
   x.fillStyle = 'rgba(35,32,26,.45)';
   x.font = '400 26px "PingFang SC",sans-serif';
