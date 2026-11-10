@@ -106,7 +106,12 @@ function buildResult(main, sub, cnt) {
   const tier = FIT_TIERS.find(t => fit >= t.min) || FIT_TIERS[FIT_TIERS.length - 1];
   const top3 = [...dims].sort((a, b) => b.val - a.val).slice(0, 3);
 
-  return { main, sub, fit, tier, dims, top3, counts: cnt };
+  const tot = (cnt[main.k] || 0) + (cnt[sub.k] || 0);
+  let pctMain = tot > 0 ? Math.round(cnt[main.k] / tot * 100) : 76;
+  pctMain = Math.max(50, Math.min(90, pctMain));
+  const pctSub = 100 - pctMain;
+
+  return { main, sub, fit, tier, dims, top3, counts: cnt, pctMain, pctSub };
 }
 
 /* ---------------- 雷达图（七轴） ---------------- */
@@ -180,6 +185,22 @@ function renderResult() {
   </div>
 
   <div class="sec fade-enter">
+    <div class="sec-h"><i></i>你的人格构成</div>
+    <div class="card">
+      <div class="mix-bar">
+        <span class="mix-main" style="width:${r.pctMain}%;background:${m.color}">${r.pctMain >= 22 ? r.pctMain + '%' : ''}</span>
+        <span class="mix-sub" style="width:${r.pctSub}%;background:${sb.color}">${r.pctSub >= 22 ? r.pctSub + '%' : ''}</span>
+      </div>
+      <div class="mix-names">
+        <div class="mix-n"><span class="dot" style="background:${m.color}"></span>${r.pctMain}% ${m.n} · ${m.nick}</div>
+        <div class="mix-n"><span class="dot" style="background:${sb.color}"></span>${r.pctSub}% ${sb.n} · ${sb.nick}</div>
+      </div>
+      <p class="para mix-txt">${sb.mix}</p>
+      <p class="note">比例由你 28 道题的作答分布算出。副型不主导你的选择，它浮现在你压力大、或面对很在意的人的时刻。</p>
+    </div>
+  </div>
+
+  <div class="sec fade-enter">
     <div class="sec-h"><i></i>你在友情里的位置</div>
     <div class="card"><p class="para">${m.core}</p></div>
   </div>
@@ -230,8 +251,26 @@ function renderResult() {
   </div>
 
   <div class="sec fade-enter">
+    <div class="sec-h"><i></i>你的交友风格</div>
+    <div class="card">
+      <div class="ph-row"><div class="ph-tag">刚认识你</div><p class="para">${m.style.early}</p></div>
+      <div class="ph-row"><div class="ph-tag">深交之后</div><p class="para">${m.style.deep}</p></div>
+      <div class="ph-row"><div class="ph-tag">关系裂了的时候</div><p class="para">${m.style.crack}</p></div>
+    </div>
+  </div>
+
+  <div class="sec fade-enter">
     <div class="sec-h"><i></i>你爱一个人的方式</div>
     <div class="card"><p class="para">${m.loveStyle}</p></div>
+  </div>
+
+  <div class="sec fade-enter">
+    <div class="sec-h"><i></i>人物深读</div>
+    <div class="card">
+      <div class="deep-row"><div class="deep-k">你最怕的</div><p class="para">${m.deep.fear}</p></div>
+      <div class="deep-row"><div class="deep-k">你想要的</div><p class="para">${m.deep.wish}</p></div>
+      <div class="deep-row"><div class="deep-k">时间会证明</div><p class="para">${m.deep.time}</p></div>
+    </div>
   </div>
 
   <div class="sec fade-enter">
@@ -263,19 +302,9 @@ function renderResult() {
     </div>
   </div>
 
-  <div class="sec fade-enter">
-    <div class="sec-h"><i></i>你的副人格</div>
-    <div class="card">
-      <div class="sub-row">
-        <span class="sub-chip" style="border-color:${sb.color};color:${sb.color}">${sb.n} · ${sb.nick}</span>
-      </div>
-      <p class="para">你身上还压着一层「${sb.nick}」的底色。它不会主导你的选择，但会出现在某些瞬间——比如你真的累了，或者对方恰好是你很在意的人。</p>
-    </div>
-  </div>
-
   <div class="share-box fade-enter">
     <div class="sb-title">分享这句话</div>
-    <div class="sb-text">《后会友期》里，我是「${m.n}」——${m.nick}。<br>契合度 ${r.fit}%，${m.line}</div>
+    <div class="sb-text">《后会友期》里，我是「${m.n}」——${m.nick}。<br>契合度 ${r.fit}%，${r.pctMain}% ${m.n} × ${r.pctSub}% ${sb.n}。<br>${m.line}</div>
     <div class="sb-tip">截图保存，发给那个你还没说完话的人</div>
     <div class="sb-btns">
       <button class="btn-main" id="btn-poster">保存结果图</button>
@@ -363,6 +392,14 @@ function makePoster() {
     tx += 150;
   });
 
+  // 人格构成
+  x.fillStyle = '#4A443A';
+  x.font = '400 30px "PingFang SC","Microsoft YaHei",sans-serif';
+  x.fillText(r.pctMain + '% ' + m.n + ' × ' + r.pctSub + '% ' + r.sub.n, W / 2, 1080);
+  x.fillStyle = 'rgba(35,32,26,.45)';
+  x.font = '400 22px "PingFang SC",sans-serif';
+  x.fillText('人格构成 · 由 28 道题作答分布算出', W / 2, 1122);
+
   x.fillStyle = 'rgba(35,32,26,.45)';
   x.font = '400 26px "PingFang SC",sans-serif';
   x.fillText('《后会友期》人物测试 · 28 题', W / 2, 1180);
@@ -412,7 +449,8 @@ function demoRender(key) {
   const sub = key === 'wen' ? DIMS.find(d => d.k === 'wang') : DIMS.find(d => d.k !== main.k);
   const cnt = {};
   DIMS.forEach(d => { cnt[d.k] = 0; });
-  cnt[main.k] = 16;
+  cnt[main.k] = 12;
+  cnt[sub.k] = 4;
   cur = buildResult(main, sub, cnt);
   cur.fit = 96;
   cur.tier = FIT_TIERS[0];
