@@ -443,19 +443,37 @@ function reset() {
   showPage('cover');
 }
 
-/* ---------------- demo：直接出指定人物的结果 ---------------- */
-function demoRender(key) {
-  const main = key === 'wen' ? WEN : (DIMS.find(d => d.k === key) || DIMS[0]);
-  const sub = key === 'wen' ? DIMS.find(d => d.k === 'wang') : DIMS.find(d => d.k !== main.k);
+/* ---------------- demo：直接出指定人物的结果（支持任意人物，用于素材页） ---------------- */
+const DEMO_ALIAS = {
+  '许飞': 'xu', '厉娜': 'li', '马天宇': 'ma', '张萌': 'meng',
+  '王子璇': 'wang', '白小纯': 'bai', '青稚': 'qing', '文吉儿': 'wen'
+};
+
+function demoRender(key, opt) {
+  opt = opt || {};
+  const k = DEMO_ALIAS[key] || key;
+  const main = k === 'wen' ? WEN : (DIMS.find(d => d.k === k) || DIMS[0]);
+  const sub = k === 'wen'
+    ? DIMS.find(d => d.k === 'wang')
+    : (DIMS.find(d => d.k === (main.fit && main.fit.k)) || DIMS.find(d => d.k !== main.k));
+
   const cnt = {};
   DIMS.forEach(d => { cnt[d.k] = 0; });
   cnt[main.k] = 12;
   cnt[sub.k] = 4;
+
   cur = buildResult(main, sub, cnt);
-  cur.fit = 96;
-  cur.tier = FIT_TIERS[0];
+  cur.fit = opt.fit || 96;
+  cur.tier = FIT_TIERS.find(t => cur.fit >= t.min) || FIT_TIERS[FIT_TIERS.length - 1];
+
+  // 构成比例与契合度同源，避免出现「96% 契合却是 50/50」的矛盾
+  let pctMain = Math.round(60 + (cur.fit - 45) * 0.55);
+  cur.pctMain = Math.max(60, Math.min(88, pctMain));
+  cur.pctSub = 100 - cur.pctMain;
+
+  const wMain = cur.pctMain / 100, wSub = cur.pctSub / 100;
   cur.dims = FRIEND_DIMS.map((fd, i) => {
-    const v = main.d7[i] * 0.82 + sub.d7[i] * 0.18;
+    const v = main.d7[i] * wMain + sub.d7[i] * wSub;
     const val = Math.round(Math.max(12, Math.min(99, v)));
     const tier = val >= 72 ? 'hi' : val >= 45 ? 'mid' : 'lo';
     return { ...fd, val, tier, text: DIM_ANALYSIS[fd.k][tier] };
@@ -468,8 +486,15 @@ function demoRender(key) {
 /* ---------------- 启动 ---------------- */
 function boot() {
   const q = new URLSearchParams(location.search);
-  const demo = q.get('demo');
-  if (demo === 'wen' || demo === '文吉儿') { demoRender('wen'); return; }
+  const demo = q.get('demo') || q.get('who') || window.__DEMO_DEFAULT__;
+  if (demo) {
+    const k = DEMO_ALIAS[demo] || demo;
+    if (k === 'wen' || DIMS.some(d => d.k === k)) {
+      const f = parseInt(q.get('fit'), 10);
+      demoRender(k, { fit: (f >= 45 && f <= 99) ? f : 0 });
+      return;
+    }
+  }
 
   questionsInit();
   renderQ();
