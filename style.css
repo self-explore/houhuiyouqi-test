@@ -19,13 +19,19 @@
   --serif:"Songti SC","STSong","Source Han Serif SC","SimSun",serif;
   --hand:"Kaiti SC","KaiTi","STKaiti","楷体","Yuanti SC",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
 }
+html{background:linear-gradient(180deg,#A9D3E8 0%,#B8D9E4 45%,#CFE3BC 100%)}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{
   font-family:var(--hand);
   color:var(--ink);
-  background:#A9D3E8 url("assets/bg.jpg") center top / cover no-repeat fixed;
+  background:transparent;
   -webkit-font-smoothing:antialiased;
   overscroll-behavior:none;
+}
+/* 固定风景底图（iOS 不支持 background-attachment:fixed，改用 fixed 伪元素） */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;
+  background:#A9D3E8 url("assets/bg.jpg") center top / cover no-repeat;
 }
 .serif{font-family:var(--serif)}
 
