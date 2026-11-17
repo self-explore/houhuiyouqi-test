@@ -120,8 +120,8 @@ function radarSVG(dims) {
   const ang = i => (-90 + i * 360 / N) * Math.PI / 180;
   let s = `<svg viewBox="0 0 400 350" class="radar" xmlns="http://www.w3.org/2000/svg">`;
   s += `<defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0%" stop-color="#B5543B" stop-opacity=".20"/>
-    <stop offset="100%" stop-color="#E9A35C" stop-opacity=".10"/></linearGradient></defs>`;
+    <stop offset="0%" stop-color="#F07EA0" stop-opacity=".28"/>
+    <stop offset="100%" stop-color="#F5C842" stop-opacity=".16"/></linearGradient></defs>`;
 
   [0.25, 0.5, 0.75, 1].forEach(rr => {
     const p = [];
@@ -129,11 +129,11 @@ function radarSVG(dims) {
       const a = ang(i);
       p.push((cx + R * rr * Math.cos(a)).toFixed(1) + ',' + (cy + R * rr * Math.sin(a)).toFixed(1));
     }
-    s += `<polygon points="${p.join(' ')}" fill="none" stroke="#E0D8C4" stroke-width="1"/>`;
+    s += `<polygon points="${p.join(' ')}" fill="none" stroke="rgba(90,62,46,.18)" stroke-width="1"/>`;
   });
   for (let i = 0; i < N; i++) {
     const a = ang(i);
-    s += `<line x1="${cx}" y1="${cy}" x2="${(cx + R * Math.cos(a)).toFixed(1)}" y2="${(cy + R * Math.sin(a)).toFixed(1)}" stroke="#E0D8C4" stroke-width="1"/>`;
+    s += `<line x1="${cx}" y1="${cy}" x2="${(cx + R * Math.cos(a)).toFixed(1)}" y2="${(cy + R * Math.sin(a)).toFixed(1)}" stroke="rgba(90,62,46,.18)" stroke-width="1"/>`;
   }
 
   const pts = [];
@@ -142,16 +142,16 @@ function radarSVG(dims) {
     const a = ang(i);
     pts.push((cx + R * rr * Math.cos(a)).toFixed(1) + ',' + (cy + R * rr * Math.sin(a)).toFixed(1));
   });
-  s += `<polygon points="${pts.join(' ')}" fill="url(#rg)" stroke="#B5543B" stroke-width="1.8" stroke-linejoin="round"/>`;
+  s += `<polygon points="${pts.join(' ')}" fill="url(#rg)" stroke="#E05C85" stroke-width="2" stroke-linejoin="round"/>`;
   dims.forEach((d, i) => {
     const rr = Math.max(0.16, Math.min(1, d.val / 100));
     const a = ang(i);
-    s += `<circle cx="${(cx + R * rr * Math.cos(a)).toFixed(1)}" cy="${(cy + R * rr * Math.sin(a)).toFixed(1)}" r="3.4" fill="#B5543B"/>`;
+    s += `<circle cx="${(cx + R * rr * Math.cos(a)).toFixed(1)}" cy="${(cy + R * rr * Math.sin(a)).toFixed(1)}" r="3.6" fill="#E05C85"/>`;
   });
   dims.forEach((d, i) => {
     const a = ang(i);
     const lx = cx + (R + 30) * Math.cos(a), ly = cy + (R + 26) * Math.sin(a);
-    s += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="13" font-weight="600" fill="#4A443A">${d.label}</text>`;
+    s += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="14" font-weight="700" fill="#6B4F3F" font-family="Kaiti SC,KaiTi,STKaiti,sans-serif">${d.label}</text>`;
   });
   s += '</svg>';
   return s;
@@ -171,7 +171,7 @@ function renderResult() {
     <div class="hero-nick">${m.nick}</div>
     <div class="hero-ring">
       <svg viewBox="0 0 120 120">
-        <circle cx="60" cy="60" r="52" fill="none" stroke="#E3DCC9" stroke-width="7"/>
+        <circle cx="60" cy="60" r="52" fill="none" stroke="#F6E9C9" stroke-width="7"/>
         <circle cx="60" cy="60" r="52" fill="none" stroke="${m.color}" stroke-width="7"
           stroke-linecap="round" stroke-dasharray="${(r.fit / 100 * 326.7).toFixed(1)} 326.7"
           transform="rotate(-90 60 60)"/>
@@ -285,7 +285,7 @@ function renderResult() {
   </div>
 
   <div class="sec fade-enter">
-    <div class="sec-h"><i></i>你和谁能处一辈子</div>
+    <div class="sec-h alt"><i></i>你和谁能处一辈子</div>
     <div class="card">
       <div class="who-row">
         <div class="who-ava" style="background:${fitD.color}">${fitD.n.slice(0, 1)}</div>
@@ -296,7 +296,7 @@ function renderResult() {
   </div>
 
   <div class="sec fade-enter">
-    <div class="sec-h"><i></i>给你的三条建议</div>
+    <div class="sec-h alt"><i></i>给你的三条建议</div>
     <div class="card">
       ${m.advice.map((t, i) => `<div class="adv"><b>${i + 1}</b><span>${t}</span></div>`).join('')}
     </div>
@@ -329,89 +329,143 @@ function renderResult() {
   $('#btn-poster').addEventListener('click', makePoster);
 }
 
-/* ---------------- 海报 ---------------- */
+/* ---------------- 海报（手账可爱风） ---------------- */
 function makePoster() {
   const m = cur.main, r = cur;
   const W = 1080, H = 1440;
+  const HAND = '"Kaiti SC","KaiTi","STKaiti","楷体","PingFang SC","Microsoft YaHei",sans-serif';
   const c = document.createElement('canvas');
   c.width = W; c.height = H;
   const x = c.getContext('2d');
-
-  const g = x.createLinearGradient(0, 0, W, H);
-  g.addColorStop(0, '#F7F3E8');
-  g.addColorStop(1, '#F1EDDF');
-  x.fillStyle = g; x.fillRect(0, 0, W, H);
-
-  // 淡淡的赭红光晕
-  const rg = x.createRadialGradient(W * 0.78, H * 0.2, 0, W * 0.78, H * 0.2, 620);
-  rg.addColorStop(0, 'rgba(181,84,59,.07)');
-  rg.addColorStop(1, 'rgba(181,84,59,0)');
-  x.fillStyle = rg; x.fillRect(0, 0, W, H);
-
-  x.fillStyle = 'rgba(35,32,26,.5)';
-  x.font = '400 26px "PingFang SC","Microsoft YaHei",sans-serif';
   x.textAlign = 'center';
-  x.fillText('你 是 后 会 友 期 里 的', W / 2, 210);
 
-  x.fillStyle = '#23201A';
-  x.font = '700 118px "Songti SC","STSong",serif';
-  x.fillText(m.n, W / 2, 360);
+  // 白字描边模拟手账立体字
+  function outlined(txt, cx, y, font, fill, lw) {
+    x.font = font; x.fillStyle = fill;
+    x.lineWidth = lw || 7; x.strokeStyle = '#FFFDF4';
+    x.lineJoin = 'round';
+    x.strokeText(txt, cx, y);
+    x.fillText(txt, cx, y);
+  }
+  // 黄色胶囊便签
+  function pill(txt, cx, cy, font, bg, fg, padX) {
+    x.font = font;
+    const w = x.measureText(txt).width + (padX || 36) * 2, h = 54;
+    x.fillStyle = bg; x.strokeStyle = '#5A3E2E'; x.lineWidth = 3;
+    roundRect(x, cx - w / 2, cy - h / 2, w, h, 27); x.fill(); x.stroke();
+    x.fillStyle = fg; x.fillText(txt, cx, cy + 17);
+  }
 
-  x.fillStyle = '#B5543B';
-  x.font = '600 38px "PingFang SC","Microsoft YaHei",sans-serif';
-  x.fillText(m.nick, W / 2, 428);
+  const draw = (bg) => {
+    // 底图（cover 式铺满）
+    if (bg && bg.width) {
+      const s = Math.max(W / bg.width, H / bg.height);
+      const bw = bg.width * s, bh = bg.height * s;
+      x.drawImage(bg, (W - bw) / 2, (H - bh) / 2, bw, bh);
+    } else {
+      const g = x.createLinearGradient(0, 0, W, H);
+      g.addColorStop(0, '#A9D3E8'); g.addColorStop(1, '#CFE6C0');
+      x.fillStyle = g; x.fillRect(0, 0, W, H);
+    }
 
-  // 契合度
-  x.strokeStyle = 'rgba(35,32,26,.12)';
-  x.lineWidth = 14;
-  x.beginPath(); x.arc(W / 2, 610, 108, 0, Math.PI * 2); x.stroke();
-  x.strokeStyle = '#B5543B';
-  x.beginPath(); x.arc(W / 2, 610, 108, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * r.fit / 100); x.stroke();
-  x.fillStyle = '#23201A';
-  x.font = '700 76px "Helvetica Neue",Arial,sans-serif';
-  x.fillText(r.fit + '%', W / 2, 636);
-  x.fillStyle = 'rgba(35,32,26,.55)';
-  x.font = '400 26px "PingFang SC",sans-serif';
-  x.fillText('契合度 · ' + r.tier.t, W / 2, 680);
+    // 中央白色大卡 + 阴影
+    x.save();
+    x.shadowColor = 'rgba(90,62,46,.4)'; x.shadowBlur = 40; x.shadowOffsetY = 14;
+    x.fillStyle = '#FFFDF4';
+    roundRect(x, 80, 250, W - 160, 1010, 40); x.fill();
+    x.restore();
+    x.strokeStyle = 'rgba(90,62,46,.16)'; x.lineWidth = 3;
+    roundRect(x, 80, 250, W - 160, 1010, 40); x.stroke();
 
-  // 台词
-  x.fillStyle = '#4A443A';
-  x.font = '400 40px "Songti SC","STSong",serif';
-  wrapText(x, m.line, W / 2, 830, W - 200, 60);
+    // 卡顶胶带
+    x.save(); x.translate(W / 2, 250); x.rotate(-0.045);
+    x.fillStyle = 'rgba(247,169,192,.85)';
+    x.fillRect(-110, -20, 220, 44);
+    x.restore();
 
-  // 标签
-  let tx = W / 2 - (m.tags.length * 150) / 2;
-  m.tags.forEach(t => {
-    x.strokeStyle = 'rgba(181,84,59,.55)';
-    x.lineWidth = 2;
-    roundRect(x, tx, 940, 140, 56, 28);
-    x.stroke();
-    x.fillStyle = '#4A443A';
-    x.font = '400 26px "PingFang SC",sans-serif';
-    x.fillText(t, tx + 70, 977);
-    tx += 150;
-  });
+    // eyebrow
+    pill('你 是 后 会 友 期 里 的', W / 2, 400, '700 34px ' + HAND, '#FFE9A8', '#5A3E2E', 30);
 
-  // 人格构成
-  x.fillStyle = '#4A443A';
-  x.font = '400 30px "PingFang SC","Microsoft YaHei",sans-serif';
-  x.fillText(r.pctMain + '% ' + m.n + ' × ' + r.pctSub + '% ' + r.sub.n, W / 2, 1080);
-  x.fillStyle = 'rgba(35,32,26,.45)';
-  x.font = '400 22px "PingFang SC",sans-serif';
-  x.fillText('人格构成 · 主型 × 副型配比', W / 2, 1122);
+    // 名字（粉底色块 + 白描边棕字）
+    const nm = m.n, nf = '700 128px ' + HAND;
+    x.font = nf;
+    const nw = x.measureText(nm).width;
+    x.save(); x.translate(W / 2, 490); x.rotate(-0.02);
+    x.fillStyle = 'rgba(240,126,160,.4)';
+    roundRect(x, -nw / 2 - 14, -96, nw + 28, 118, 20); x.fill();
+    x.restore();
+    outlined(nm, W / 2, 596, nf, '#5A3E2E', 9);
 
-  x.fillStyle = 'rgba(35,32,26,.45)';
-  x.font = '400 26px "PingFang SC",sans-serif';
-  x.fillText('《后会友期》人物测试 · 28 题', W / 2, 1180);
-  x.font = '400 22px "PingFang SC",sans-serif';
-  x.fillText('娱乐向内容，不代表对真实人物的评价', W / 2, 1230);
-  x.fillStyle = 'rgba(181,84,59,.5)';
-  x.fillRect(W / 2 - 40, 1300, 80, 2);
+    // 昵称
+    pill(m.nick, W / 2, 700, '700 40px ' + HAND, '#FDE7EF', '#E05C85', 34);
 
-  const a = document.createElement('a');
-  a.download = `后会友期-${m.n}.png`;
-  a.href = c.toDataURL('image/png');
-  a.click();
+    // 契合度圆环
+    const ry = 860, rr = 105;
+    x.strokeStyle = '#F6E9C9'; x.lineWidth = 15;
+    x.beginPath(); x.arc(W / 2, ry, rr, 0, Math.PI * 2); x.stroke();
+    x.strokeStyle = '#E05C85'; x.lineCap = 'round';
+    x.beginPath(); x.arc(W / 2, ry, rr, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * r.fit / 100); x.stroke();
+    x.lineCap = 'butt';
+    x.fillStyle = '#5A3E2E';
+    x.font = '700 64px "Helvetica Neue",Arial,sans-serif';
+    x.fillText(r.fit + '%', W / 2, ry + 8);
+    x.font = '700 26px ' + HAND;
+    x.fillStyle = '#6B4F3F';
+    x.fillText('契 合 度', W / 2, ry + 46);
+
+    // 台词（多行白描边）
+    x.font = '700 42px ' + HAND;
+    const lw = W - 240, lh = 66;
+    const chars = m.line.split(''); let ln = '', lns = [];
+    chars.forEach(ch => { if (x.measureText(ln + ch).width > lw) { lns.push(ln); ln = ch; } else ln += ch; });
+    if (ln) lns.push(ln);
+    lns.forEach((l, i) => {
+      x.save(); x.lineWidth = 6; x.strokeStyle = '#FFFDF4'; x.lineJoin = 'round';
+      x.strokeText(l, W / 2, 1030 + i * lh); x.restore();
+      x.fillStyle = '#6B4F3F';
+      x.fillText(l, W / 2, 1030 + i * lh);
+    });
+
+    // 标签
+    const tagF = '700 30px ' + HAND;
+    x.font = tagF;
+    const tw = m.tags.map(t => x.measureText(t).width + 62);
+    const tot = tw.reduce((a, b) => a + b, 0) + (m.tags.length - 1) * 20;
+    let tx = W / 2 - tot / 2;
+    m.tags.forEach((t, i) => {
+      pill(t, tx + tw[i] / 2, 1195, tagF, '#FFFDF4', '#5A3E2E', 22);
+      tx += tw[i] + 20;
+    });
+
+    // 构成
+    x.save(); x.lineWidth = 6; x.strokeStyle = '#FFFDF4'; x.lineJoin = 'round';
+    x.font = '700 34px ' + HAND;
+    x.strokeText(r.pctMain + '% ' + m.n + ' × ' + r.pctSub + '% ' + r.sub.n, W / 2, 1300); x.restore();
+    x.fillStyle = '#5A3E2E';
+    x.fillText(r.pctMain + '% ' + m.n + ' × ' + r.pctSub + '% ' + r.sub.n, W / 2, 1300);
+
+    x.save(); x.lineWidth = 5; x.strokeStyle = '#FFFDF4'; x.lineJoin = 'round';
+    x.font = '600 26px ' + HAND;
+    x.strokeText('《后会友期》人物测试 · 28 题', W / 2, 1362); x.restore();
+    x.fillStyle = '#6B4F3F';
+    x.fillText('《后会友期》人物测试 · 28 题', W / 2, 1362);
+
+    x.save(); x.lineWidth = 5; x.strokeStyle = '#FFFDF4'; x.lineJoin = 'round';
+    x.font = '600 22px ' + HAND;
+    x.strokeText('娱乐向内容，不代表对真实人物的评价', W / 2, 1408); x.restore();
+    x.fillStyle = '#6B4F3F';
+    x.fillText('娱乐向内容，不代表对真实人物的评价', W / 2, 1408);
+
+    const a = document.createElement('a');
+    a.download = `后会友期-${m.n}.png`;
+    a.href = c.toDataURL('image/png');
+    a.click();
+  };
+
+  const img = new Image();
+  img.onload = () => draw(img);
+  img.onerror = () => draw(null);
+  img.src = 'assets/bg.jpg?v=20261112';
 }
 
 function wrapText(ctx, text, cx, y, maxW, lh) {
